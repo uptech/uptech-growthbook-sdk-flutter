@@ -10,7 +10,7 @@ class UptechGrowthBookWrapper {
   late GrowthBookSDK _client;
 
   /// Initialize for use in app
-  void init({required String apiKey}) {
+  void init() {
     _client = _createLiveClient(apiKey);
   }
 
