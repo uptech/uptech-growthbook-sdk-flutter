@@ -1,6 +1,23 @@
-## Usage
+## Uptech GrowthBook SDK Flutter Wrapper
 
-### Setup Singleton
+This project is a thin wrapper around the [GrowthBook Flutter SDK][] so that we
+can use the [GrowthBook][] service to manage feature toggles while also being
+able to manage toggle states properly within automated test suites.
+
+## Setup
+
+To set this up you need an account on [GrowthBook][] or to be hosting it
+yourself.
+
+Once you have an account and have setup your Project and the environments the
+way you want. You need to get the read-only API key for each of the
+environments and configure them in your app per environment.
+
+Then you need to setup a singleton in your app to to house the shared instance
+of the `UptechGrowthBookWrapper`. *Note:* This is whan needs the `apiKey` that
+should come from your environment config and **not** be hard coded in your app.
+This might look as follows maybe in a file called, `lib/togls.dart`. It is
+really up to you how you do this. This is just a suggestion.
 
 ```dart
 class Togls extends UptechGrowthBookWrapper {
@@ -12,6 +29,14 @@ class Togls extends UptechGrowthBookWrapper {
   static final shared = Togls();
 }
 ```
+
+## Usage
+
+Once you have it setup you are ready to start using it. The following examples
+assume that you followed the suggestion above in terms of creating the
+singleton. If you did something different you should still be able to use these
+as rough examples of how to evaluate a feature and how to control toggles in
+automated tests.
 
 ### Evaluate Feature
 
@@ -63,3 +88,6 @@ void main() {
   });
 }
 ```
+
+[GrowthBook Flutter SDK]: https://github.com/alippo-com/GrowthBook-SDK-Flutter
+[GrowthBook]: https://www.growthbook.io
