@@ -26,7 +26,7 @@ class UptechGrowthBookWrapper {
 
   /// Check if a feature is on/off
   bool isOn(String featureId) {
-    return _client.feature(featureId).on!;
+    return _client.feature(featureId).on ?? false;
   }
 
   GrowthBookSDK _createLiveClient(String apiKey) {
