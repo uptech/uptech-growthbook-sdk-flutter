@@ -9,9 +9,11 @@ class UptechGrowthBookWrapper {
   final String apiKey;
   late GrowthBookSDK _client;
 
-  /// Initialize for use in app
-  void init() {
-    _client = _createLiveClient(apiKey);
+  /// Initialize for use in app, seeds allow you to specify value of
+  /// toggles prior to fetching remote toggle states. These will be
+  /// the values if on init it fails to fetch the toggles from the remote.
+  void init({Map<String, bool>? seeds}) {
+    _client = _createLiveClient(apiKey: apiKey, seeds: seeds);
   }
 
   /// Initialize for use in automated test suite
@@ -29,12 +31,21 @@ class UptechGrowthBookWrapper {
     return _client.feature(featureId).on ?? false;
   }
 
-  GrowthBookSDK _createLiveClient(String apiKey) {
-    return GBSDKBuilderApp(
+  GrowthBookSDK _createLiveClient(
+      {required String apiKey, required Map<String, bool>? seeds}) {
+    final gbContext = GBContext(
       apiKey: apiKey,
+      enabled: true,
+      qaMode: false,
       hostURL: 'https://cdn.growthbook.io/',
-      growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {},
-    ).initialize();
+      forcedVariation: <String, int>{},
+      trackingCallBack: (gbExperiment, gbExperimentResult) {},
+    );
+    return GrowthBookSDK(
+      context: gbContext,
+      client: UptechGrowthBookWrapperTestClient(seeds: seeds),
+      features: _seedsToGBFeatures(seeds: seeds),
+    );
   }
 
   GrowthBookSDK _createTestClient({Map<String, bool>? seeds}) {
