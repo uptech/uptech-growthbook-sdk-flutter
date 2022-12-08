@@ -23,7 +23,7 @@ class UptechGrowthBookWrapper {
 
   /// Force a refresh of toggles from the server
   Future<void> refresh() async {
-    return _client.refresh();
+    return await _client.refresh();
   }
 
   /// Check if a feature is on/off
