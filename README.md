@@ -4,6 +4,20 @@ This project is a thin wrapper around the [GrowthBook Flutter SDK][] so that we
 can use the [GrowthBook][] service to manage feature toggles while also being
 able to manage toggle states properly within automated test suites.
 
+## Development
+
+Get dependencies
+
+```
+flutter pub get
+```
+
+Run tests
+
+```
+flutter test
+```
+
 ## Setup
 
 To set this up you need an account on [GrowthBook][] or to be hosting it
