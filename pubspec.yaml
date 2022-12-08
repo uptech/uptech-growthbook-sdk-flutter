@@ -1,6 +1,6 @@
 name: uptech_growthbook_sdk_flutter
 description: A thin wrapper around GrowthBook's Flutter SDK to support automated testing
-version: 0.3.0
+version: 0.3.1
 homepage: https://github.com/uptech/uptech-growthbook-sdk-flutter
 
 environment:
