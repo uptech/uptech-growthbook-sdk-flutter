@@ -1,5 +1,5 @@
 import 'package:uptech_growthbook_sdk_flutter/uptech_growthbook_sdk_flutter.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 class ToglTest extends UptechGrowthBookWrapper {
   ToglTest() : super(apiKey: 'dummy-api-key');
@@ -9,27 +9,53 @@ class ToglTest extends UptechGrowthBookWrapper {
 
 void main() {
   group('UpTechGrowthBookSDKFlutter', () {
-    group('when an overridden value is present', () {
-      setUp(() {
-        ToglTest.instance.initForTests(seeds: {
-          'test-value': true,
+    group('#isOn', () {
+      const String featureName = 'some-feature-name';
+
+      group('when no value is found for the feature', () {
+        setUp(() {
+          ToglTest.instance.initForTests(seeds: {
+            featureName: true,
+          });
+        });
+
+        test('it returns false', () {
+          expect(ToglTest.instance.isOn('some-other-feature'), isFalse);
         });
       });
 
-      test('it returns the overridden value', () {
-        expect(ToglTest.instance.isOn('test-value'), isTrue);
-      });
-    });
+      group('when a feature value is present', () {
+        setUp(() {
+          ToglTest.instance.initForTests(seeds: {
+            featureName: true,
+          });
+        });
 
-    group('when an overridden value is not present', () {
-      setUp(() {
-        ToglTest.instance.initForTests(seeds: {
-          'some-other-value': true,
+        test('it returns the feature value', () {
+          expect(ToglTest.instance.isOn(featureName), isTrue);
         });
       });
 
-      test('it returns false', () {
-        expect(ToglTest.instance.isOn('test-value'), isFalse);
+      group('when an override is present', () {
+        setUp(() {
+          ToglTest.instance.init(
+            overridesPath: 'assets/overrides.json',
+          );
+        });
+
+        test('it returns the overridden value', () {
+          expect(ToglTest.instance.isOn(featureName), isTrue);
+        });
+      });
+
+      group('when an invalid override path is given', () {
+        setUp(() {
+          ToglTest.instance.init(overridesPath: 'some/invalid/path.json');
+        });
+
+        test('it returns false', () {
+          expect(ToglTest.instance.isOn(featureName), isFalse);
+        });
       });
     });
   });

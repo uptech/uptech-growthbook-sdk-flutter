@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
 import 'uptech_growthbook_wrapper_test_client.dart';
 
@@ -6,18 +8,26 @@ import 'uptech_growthbook_wrapper_test_client.dart';
 /// automated testing.
 class UptechGrowthBookWrapper {
   UptechGrowthBookWrapper({required this.apiKey});
-  final String apiKey;
+
   late GrowthBookSDK _client;
+  final String apiKey;
+  final Map<String, dynamic> _overrides = {};
 
   /// Initialize for use in app, seeds allow you to specify value of
   /// toggles prior to fetching remote toggle states. These will be
   /// the values if on init it fails to fetch the toggles from the remote.
-  void init({Map<String, bool>? seeds}) {
+  void init({Map<String, bool>? seeds, String? overridesPath}) {
+    _overrides.clear();
     _client = _createLiveClient(apiKey: apiKey, seeds: seeds);
+
+    if (overridesPath != null) {
+      _readOverrides(overridesPath);
+    }
   }
 
   /// Initialize for use in automated test suite
   void initForTests({Map<String, bool>? seeds}) {
+    _overrides.clear();
     _client = _createTestClient(seeds: seeds);
   }
 
@@ -28,6 +38,13 @@ class UptechGrowthBookWrapper {
 
   /// Check if a feature is on/off
   bool isOn(String featureId) {
+    final hasOverride = _overrides.containsKey(featureId);
+
+    if (hasOverride) {
+      final value = _overrides[featureId];
+      return value == true;
+    }
+
     return _client.feature(featureId).on ?? false;
   }
 
@@ -67,5 +84,16 @@ class UptechGrowthBookWrapper {
     } else {
       return {};
     }
+  }
+
+  void _readOverrides(String path) {
+    final file = File(path);
+
+    if (!file.existsSync()) {
+      return;
+    }
+
+    _overrides.clear();
+    _overrides.addAll(jsonDecode(file.readAsStringSync()));
   }
 }
