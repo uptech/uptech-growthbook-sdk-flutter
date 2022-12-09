@@ -43,7 +43,6 @@ class UptechGrowthBookWrapper {
     );
     return GrowthBookSDK(
       context: gbContext,
-      client: UptechGrowthBookWrapperTestClient(seeds: seeds),
       features: _seedsToGBFeatures(seeds: seeds),
     );
   }
