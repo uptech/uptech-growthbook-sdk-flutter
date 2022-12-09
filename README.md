@@ -44,6 +44,29 @@ class Togls extends UptechGrowthBookWrapper {
 }
 ```
 
+Then in your `main.dart` you initialize the it as follows.
+
+```dart
+void main() {
+	// ...
+	// ...
+	Togls.shared.init(
+		seeds: {
+		  'example-toggle-higher-fee': false,
+		},
+	);
+	// ...
+	// ...
+}
+```
+
+In the above we provide `seeds` which are values that are used to evaulate the
+toggles prior to it having fetched the toggles from the remote server. In the
+happy path this window of time is extremely small to the point where you won't
+even notice these values. However, in the case that user launched the app and
+the network connection is not working or the GrowthBook service was down then
+the toggles would evaluate to the value specified in the `seeds`.
+
 ## Usage
 
 Once you have it setup you are ready to start using it. The following examples
@@ -51,6 +74,7 @@ assume that you followed the suggestion above in terms of creating the
 singleton. If you did something different you should still be able to use these
 as rough examples of how to evaluate a feature and how to control toggles in
 automated tests.
+
 
 ### Evaluate Feature
 
