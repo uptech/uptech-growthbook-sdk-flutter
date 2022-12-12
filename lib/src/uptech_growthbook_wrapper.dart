@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
 import 'uptech_growthbook_wrapper_test_client.dart';
@@ -8,11 +7,8 @@ Future<Map<String, dynamic>> loadOverridesFromAssets(String assetsPath) async {
   try {
     final json = await rootBundle.loadString(assetsPath, cache: false);
     return jsonDecode(json);
-  } on FlutterError catch (e) {
-    if (e.message == 'Unable to load asset: $assetsPath') {
-      return {};
-    }
-    rethrow;
+  } catch (e) {
+    return {};
   }
 }
 
