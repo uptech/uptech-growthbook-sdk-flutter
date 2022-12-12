@@ -44,28 +44,79 @@ class Togls extends UptechGrowthBookWrapper {
 }
 ```
 
-Then in your `main.dart` you initialize the it as follows.
+Once you have the `Togls` class you have two options for initializing the
+library. One you can do in `main.dart` as follows. *Note:* You need to include
+the `WidgetsFlutterBinding.ensureInitialized()` if you are going to load your
+overrides from assets.
 
 ```dart
-void main() {
+void main() async {
 	// ...
 	// ...
+	WidgetsFlutterBinding.ensureInitialized();
+	final overrides = await loadOverridesFromAssets('assets/overrides.json');
 	Togls.shared.init(
 		seeds: {
 		  'example-toggle-higher-fee': false,
 		},
+		overrides: overrides,
 	);
 	// ...
 	// ...
 }
 ```
 
-In the above we provide `seeds` which are values that are used to evaulate the
-toggles prior to it having fetched the toggles from the remote server. In the
-happy path this window of time is extremely small to the point where you won't
-even notice these values. However, in the case that user launched the app and
-the network connection is not working or the GrowthBook service was down then
-the toggles would evaluate to the value specified in the `seeds`.
+The other option is to have your top level widget be a `Stateful` widget and
+call `Togls.shared.init` from within it's `initState` method that way it is
+being executed once Flutter has been initialized. This would look something
+like the following.
+
+```dart
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+	loadOverridesFromAssets('assets/overrides.json').then((overrides) {
+		Togls.shared.init(
+			seeds: {
+			  'example-toggle-higher-fee': false,
+			},
+			overrides: overrides,
+		);
+	});
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+```
+
+In the above examples we provide `seeds` which are values that are used to
+evaulate the toggles prior to it having fetched the toggles from the remote
+server. In the happy path this window of time is extremely small to the point
+where you won't even notice these values. However, in the case that user
+launched the app and the network connection is not working or the GrowthBook
+service was down then the toggles would evaluate to the value specified in the
+`seeds`.
 
 ## Usage
 
