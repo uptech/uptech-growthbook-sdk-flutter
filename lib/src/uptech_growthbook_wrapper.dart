@@ -1,7 +1,20 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
 import 'uptech_growthbook_wrapper_test_client.dart';
+
+Future<Map<String, dynamic>> loadOverridesFromAssets(String assetsPath) async {
+  try {
+    final json = await rootBundle.loadString(assetsPath, cache: false);
+    return jsonDecode(json);
+  } on FlutterError catch (e) {
+    if (e.message == 'Unable to load asset: $assetsPath') {
+      return {};
+    }
+    rethrow;
+  }
+}
 
 /// Thin wrapper around the GrowthBookSDK to facilitate both
 /// live client and stubbed out client for use case in
@@ -16,18 +29,21 @@ class UptechGrowthBookWrapper {
   /// Initialize for use in app, seeds allow you to specify value of
   /// toggles prior to fetching remote toggle states. These will be
   /// the values if on init it fails to fetch the toggles from the remote.
-  void init({Map<String, bool>? seeds, String? overridesPath}) {
+  void init({Map<String, bool>? seeds, Map<String, dynamic>? overrides}) {
     _overrides.clear();
-    _client = _createLiveClient(apiKey: apiKey, seeds: seeds);
-
-    if (overridesPath != null) {
-      _readOverrides(overridesPath);
+    if (overrides != null) {
+      _overrides.addAll(overrides);
     }
+    _client = _createLiveClient(apiKey: apiKey, seeds: seeds);
   }
 
   /// Initialize for use in automated test suite
-  void initForTests({Map<String, bool>? seeds}) {
+  void initForTests(
+      {Map<String, bool>? seeds, Map<String, dynamic>? overrides}) {
     _overrides.clear();
+    if (overrides != null) {
+      _overrides.addAll(overrides);
+    }
     _client = _createTestClient(seeds: seeds);
   }
 
@@ -84,16 +100,5 @@ class UptechGrowthBookWrapper {
     } else {
       return {};
     }
-  }
-
-  void _readOverrides(String path) {
-    final file = File(path);
-
-    if (!file.existsSync()) {
-      return;
-    }
-
-    _overrides.clear();
-    _overrides.addAll(jsonDecode(file.readAsStringSync()));
   }
 }

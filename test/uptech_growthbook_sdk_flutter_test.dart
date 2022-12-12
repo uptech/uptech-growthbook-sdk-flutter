@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:uptech_growthbook_sdk_flutter/uptech_growthbook_sdk_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,10 +9,9 @@ class ToglTest extends UptechGrowthBookWrapper {
 }
 
 void main() {
+  const String featureName = 'some-feature-name';
   group('UpTechGrowthBookSDKFlutter', () {
     group('#isOn', () {
-      const String featureName = 'some-feature-name';
-
       group('when no value is found for the feature', () {
         setUp(() {
           ToglTest.instance.initForTests(seeds: {
@@ -38,8 +38,8 @@ void main() {
 
       group('when an override is present', () {
         setUp(() {
-          ToglTest.instance.init(
-            overridesPath: 'assets/overrides.json',
+          ToglTest.instance.initForTests(
+            overrides: {featureName: true},
           );
         });
 
@@ -47,16 +47,27 @@ void main() {
           expect(ToglTest.instance.isOn(featureName), isTrue);
         });
       });
+    });
+  });
 
-      group('when an invalid override path is given', () {
-        setUp(() {
-          ToglTest.instance.init(overridesPath: 'some/invalid/path.json');
-        });
-
-        test('it returns false', () {
-          expect(ToglTest.instance.isOn(featureName), isFalse);
-        });
+  group('loadOverridesFromAssets', () {
+    setUp(() {
+      ToglTest.instance.initForTests(seeds: {
+        featureName: true,
       });
+    });
+
+    test('returns empty overrides when asset file not found', () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      final overrides =
+          await loadOverridesFromAssets('assets/some_missing_asset_file.json');
+      expect(overrides, equals({}));
+    });
+
+    test('fetches overrides', () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      final overrides = await loadOverridesFromAssets('assets/overrides.json');
+      expect(overrides[featureName], isTrue);
     });
   });
 }
