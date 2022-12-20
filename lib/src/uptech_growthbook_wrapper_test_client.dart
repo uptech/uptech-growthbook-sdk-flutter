@@ -5,7 +5,7 @@ import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
 class UptechGrowthBookWrapperTestClient extends BaseClient {
   UptechGrowthBookWrapperTestClient({this.seeds, this.rules});
 
-  final Map<String, bool>? seeds;
+  final Map<String, dynamic>? seeds;
   final List<Map<String, dynamic>>? rules;
 
   @override
@@ -19,7 +19,7 @@ class UptechGrowthBookWrapperTestClient extends BaseClient {
   }
 
   Map<String, dynamic> _seedsToHashFeatures(
-      Map<String, bool>? seeds, List<Map<String, dynamic>>? rules) {
+      Map<String, dynamic>? seeds, List<Map<String, dynamic>>? rules) {
     final Map<String, dynamic> emptyFeatures = {};
     if (seeds != null) {
       return seeds.map((key, value) {

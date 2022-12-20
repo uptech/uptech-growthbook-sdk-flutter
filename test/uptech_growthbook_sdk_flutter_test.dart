@@ -48,6 +48,58 @@ void main() {
         });
       });
     });
+
+    group('#value', () {
+      group('when no value is found for the feature', () {
+        setUp(() {
+          ToglTest.instance.initForTests(seeds: {
+            'string-value-feature': 'value',
+            'int-value-feature': 1,
+            'bool-value-feature': true,
+          });
+        });
+
+        test('it returns null', () {
+          expect(ToglTest.instance.value('some-other-feature'), isNull);
+        });
+      });
+
+      group('when a feature value is present', () {
+        setUp(() {
+          ToglTest.instance.initForTests(seeds: {
+            'string-value-feature': 'value',
+            'int-value-feature': 1,
+            'bool-value-feature': true,
+          });
+        });
+
+        test('it returns the feature value', () {
+          expect(
+              ToglTest.instance.value('string-value-feature'), equals('value'));
+          expect(ToglTest.instance.value('int-value-feature'), equals(1));
+          expect(ToglTest.instance.value('bool-value-feature'), isTrue);
+        });
+      });
+
+      group('when an override is present', () {
+        setUp(() {
+          ToglTest.instance.initForTests(
+            overrides: {
+              'string-value-feature': 'value',
+              'int-value-feature': 1,
+              'bool-value-feature': true,
+            },
+          );
+        });
+
+        test('it returns the overridden value', () {
+          expect(
+              ToglTest.instance.value('string-value-feature'), equals('value'));
+          expect(ToglTest.instance.value('int-value-feature'), equals(1));
+          expect(ToglTest.instance.value('bool-value-feature'), isTrue);
+        });
+      });
+    });
   });
 
   group('loadOverridesFromAssets', () {

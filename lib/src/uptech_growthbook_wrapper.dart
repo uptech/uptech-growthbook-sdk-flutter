@@ -25,7 +25,7 @@ class UptechGrowthBookWrapper {
   /// Initialize for use in app, seeds allow you to specify value of
   /// toggles prior to fetching remote toggle states. These will be
   /// the values if on init it fails to fetch the toggles from the remote.
-  void init({Map<String, bool>? seeds, Map<String, dynamic>? overrides}) {
+  void init({Map<String, dynamic>? seeds, Map<String, dynamic>? overrides}) {
     _overrides.clear();
     if (overrides != null) {
       _overrides.addAll(overrides);
@@ -35,7 +35,7 @@ class UptechGrowthBookWrapper {
 
   /// Initialize for use in automated test suite
   void initForTests(
-      {Map<String, bool>? seeds,
+      {Map<String, dynamic>? seeds,
       Map<String, dynamic>? overrides,
       List<Map<String, dynamic>>? rules}) {
     _overrides.clear();
@@ -62,9 +62,21 @@ class UptechGrowthBookWrapper {
     return _client.feature(featureId).on ?? false;
   }
 
+  /// Return the value of a feature.
+  /// If the feature does not have a value configured, returns null.
+  dynamic value(String featureId) {
+    final hasOverride = _overrides.containsKey(featureId);
+
+    if (hasOverride) {
+      return _overrides[featureId];
+    }
+
+    return _client.feature(featureId).value;
+  }
+
   GrowthBookSDK _createLiveClient({
     required String apiKey,
-    required Map<String, bool>? seeds,
+    required Map<String, dynamic>? seeds,
   }) {
     final gbContext = GBContext(
       apiKey: apiKey,
@@ -81,7 +93,7 @@ class UptechGrowthBookWrapper {
   }
 
   GrowthBookSDK _createTestClient(
-      {Map<String, bool>? seeds, List<Map<String, dynamic>>? rules}) {
+      {Map<String, dynamic>? seeds, List<Map<String, dynamic>>? rules}) {
     final gbContext = GBContext(
       apiKey: 'some-garbage-key-because-we-are-not-using-it',
       hostURL: 'https://cdn.growthbook.io/',
@@ -94,7 +106,7 @@ class UptechGrowthBookWrapper {
     );
   }
 
-  Map<String, GBFeature> _seedsToGBFeatures({Map<String, bool>? seeds}) {
+  Map<String, GBFeature> _seedsToGBFeatures({Map<String, dynamic>? seeds}) {
     if (seeds != null) {
       return seeds
           .map((key, value) => MapEntry(key, GBFeature(defaultValue: value)));
