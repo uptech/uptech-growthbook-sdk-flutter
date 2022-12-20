@@ -5,7 +5,7 @@ import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
 class UptechGrowthBookWrapperTestClient extends BaseClient {
   UptechGrowthBookWrapperTestClient({this.seeds});
 
-  final Map<String, bool>? seeds;
+  final Map<String, dynamic>? seeds;
 
   @override
   consumeGetRequest(String path, OnSuccess onSuccess, OnError onError) async {
@@ -17,7 +17,7 @@ class UptechGrowthBookWrapperTestClient extends BaseClient {
     onSuccess(data);
   }
 
-  Map<String, dynamic> _seedsToHashFeatures(Map<String, bool>? seeds) {
+  Map<String, dynamic> _seedsToHashFeatures(Map<String, dynamic>? seeds) {
     final Map<String, dynamic> emptyFeatures = {};
     if (seeds != null) {
       return seeds.map((key, value) => MapEntry(key, {'defaultValue': value}));
