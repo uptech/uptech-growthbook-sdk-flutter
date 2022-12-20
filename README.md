@@ -37,7 +37,9 @@ really up to you how you do this. This is just a suggestion.
 class Togls extends UptechGrowthBookWrapper {
   Togls()
       : super(
-          apiKey: 'your-api-key', // example: dev_Y1WwxOm9sDnIsO1DLvwJk76z3ribr3VoiTsaOs?project=prj_29g61lbb6s8290
+          // In GrowthBook dashboard > SDK Endpoints url: https://cdn.growthbook.io/api/features/dev_Y1WwxOm9sDnIsO1DLvwJk76z3ribr3VoiTsaOs?project=prj_29g61lbb6s8290
+          // Include everything after the last '/'. example: dev_Y1WwxOm9sDnIsO1DLvwJk76z3ribr3VoiTsaOs?project=prj_29g61lbb6s8290
+          apiKey: 'your-api-key', 
         );
 
   static final shared = Togls();
