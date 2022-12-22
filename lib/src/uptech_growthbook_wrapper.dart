@@ -35,12 +35,14 @@ class UptechGrowthBookWrapper {
 
   /// Initialize for use in automated test suite
   void initForTests(
-      {Map<String, bool>? seeds, Map<String, dynamic>? overrides}) {
+      {Map<String, bool>? seeds,
+      Map<String, dynamic>? overrides,
+      List<Map<String, dynamic>>? rules}) {
     _overrides.clear();
     if (overrides != null) {
       _overrides.addAll(overrides);
     }
-    _client = _createTestClient(seeds: seeds);
+    _client = _createTestClient(seeds: seeds, rules: rules);
   }
 
   /// Force a refresh of toggles from the server
@@ -60,8 +62,10 @@ class UptechGrowthBookWrapper {
     return _client.feature(featureId).on ?? false;
   }
 
-  GrowthBookSDK _createLiveClient(
-      {required String apiKey, required Map<String, bool>? seeds}) {
+  GrowthBookSDK _createLiveClient({
+    required String apiKey,
+    required Map<String, bool>? seeds,
+  }) {
     final gbContext = GBContext(
       apiKey: apiKey,
       enabled: true,
@@ -76,7 +80,8 @@ class UptechGrowthBookWrapper {
     );
   }
 
-  GrowthBookSDK _createTestClient({Map<String, bool>? seeds}) {
+  GrowthBookSDK _createTestClient(
+      {Map<String, bool>? seeds, List<Map<String, dynamic>>? rules}) {
     final gbContext = GBContext(
       apiKey: 'some-garbage-key-because-we-are-not-using-it',
       hostURL: 'https://cdn.growthbook.io/',
@@ -84,7 +89,7 @@ class UptechGrowthBookWrapper {
     );
     return GrowthBookSDK(
       context: gbContext,
-      client: UptechGrowthBookWrapperTestClient(seeds: seeds),
+      client: UptechGrowthBookWrapperTestClient(seeds: seeds, rules: rules),
       features: _seedsToGBFeatures(seeds: seeds),
     );
   }
