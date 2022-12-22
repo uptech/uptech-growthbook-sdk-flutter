@@ -98,6 +98,54 @@ void main() {
           expect(ToglTest.instance.value('bool-value-feature'), isTrue);
         });
       });
+
+      group('when the attribute meets the condition', () {
+        setUp(() {
+          const String greaterThan = '\$gt';
+          ToglTest.instance.initForTests(
+            seeds: {
+              'some-feature': false,
+            },
+            rules: [
+              {
+                'condition': {
+                  'version': {greaterThan: '1.0.0'}
+                },
+                'force': true
+              }
+            ],
+            attributes: {'version': '1.0.1'},
+          );
+        });
+
+        test('it returns true', () {
+          expect(ToglTest.instance.isOn('some-feature'), isTrue);
+        });
+      });
+
+      group('when the attribute does not meet the condition', () {
+        setUp(() {
+          const String greaterThan = '\$gt';
+          ToglTest.instance.initForTests(
+            seeds: {
+              'some-feature': false,
+            },
+            rules: [
+              {
+                'condition': {
+                  'version': {greaterThan: '1.0.0'}
+                },
+                'force': true
+              }
+            ],
+            attributes: {'version': '0.0.9'},
+          );
+        });
+
+        test('it returns false', () {
+          expect(ToglTest.instance.isOn('some-feature'), isFalse);
+        });
+      });
     });
   });
 
