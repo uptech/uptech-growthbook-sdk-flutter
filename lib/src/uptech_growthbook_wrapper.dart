@@ -21,14 +21,22 @@ class UptechGrowthBookWrapper {
   late GrowthBookSDK _client;
   final String apiKey;
   final Map<String, dynamic> _overrides = {};
+  final Map<String, dynamic> _attributes = {};
 
   /// Initialize for use in app, seeds allow you to specify value of
   /// toggles prior to fetching remote toggle states. These will be
   /// the values if on init it fails to fetch the toggles from the remote.
-  void init({Map<String, bool>? seeds, Map<String, dynamic>? overrides}) {
+  void init(
+      {Map<String, bool>? seeds,
+      Map<String, dynamic>? overrides,
+      Map<String, dynamic>? attributes}) {
     _overrides.clear();
+    _attributes.clear();
     if (overrides != null) {
       _overrides.addAll(overrides);
+    }
+    if (attributes != null) {
+      _attributes.addAll(attributes);
     }
     _client = _createLiveClient(apiKey: apiKey, seeds: seeds);
   }
@@ -37,10 +45,15 @@ class UptechGrowthBookWrapper {
   void initForTests(
       {Map<String, bool>? seeds,
       Map<String, dynamic>? overrides,
+      Map<String, dynamic>? attributes,
       List<Map<String, dynamic>>? rules}) {
     _overrides.clear();
+    _attributes.clear();
     if (overrides != null) {
       _overrides.addAll(overrides);
+    }
+    if (attributes != null) {
+      _attributes.addAll(attributes);
     }
     _client = _createTestClient(seeds: seeds, rules: rules);
   }
@@ -70,6 +83,7 @@ class UptechGrowthBookWrapper {
       apiKey: apiKey,
       enabled: true,
       qaMode: false,
+      attributes: _attributes,
       hostURL: 'https://cdn.growthbook.io/',
       forcedVariation: <String, int>{},
       trackingCallBack: (gbExperiment, gbExperimentResult) {},
@@ -85,6 +99,7 @@ class UptechGrowthBookWrapper {
     final gbContext = GBContext(
       apiKey: 'some-garbage-key-because-we-are-not-using-it',
       hostURL: 'https://cdn.growthbook.io/',
+      attributes: _attributes,
       trackingCallBack: (gbExperiment, gbExperimentResult) {},
     );
     return GrowthBookSDK(

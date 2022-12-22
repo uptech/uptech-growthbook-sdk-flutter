@@ -47,6 +47,54 @@ void main() {
           expect(ToglTest.instance.isOn(featureName), isTrue);
         });
       });
+
+      group('when the attribute meets the condition', () {
+        setUp(() {
+          const String greaterThan = '\$gt';
+          ToglTest.instance.initForTests(
+            seeds: {
+              featureName: false,
+            },
+            rules: [
+              {
+                'condition': {
+                  'version': {greaterThan: '1.0.0'}
+                },
+                'force': true
+              }
+            ],
+            attributes: {'version': '1.0.1'},
+          );
+        });
+
+        test('it returns true', () {
+          expect(ToglTest.instance.isOn(featureName), isTrue);
+        });
+      });
+
+      group('when the attribute does not meet the condition', () {
+        setUp(() {
+          const String greaterThan = '\$gt';
+          ToglTest.instance.initForTests(
+            seeds: {
+              featureName: false,
+            },
+            rules: [
+              {
+                'condition': {
+                  'version': {greaterThan: '1.0.0'}
+                },
+                'force': true
+              }
+            ],
+            attributes: {'version': '0.0.9'},
+          );
+        });
+
+        test('it returns false', () {
+          expect(ToglTest.instance.isOn(featureName), isFalse);
+        });
+      });
     });
   });
 
