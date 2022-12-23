@@ -28,7 +28,7 @@ way you want. You need to get the read-only API key for each of the
 environments and configure them in your app per environment.
 
 Then you need to setup a singleton in your app to to house the shared instance
-of the `UptechGrowthBookWrapper`. *Note:* This is whan needs the `apiKey` that
+of the `UptechGrowthBookWrapper`. *Note:* This is whan needs the `apiKeyUrl` that
 should come from your environment config and **not** be hard coded in your app.
 This might look as follows maybe in a file called, `lib/togls.dart`. It is
 really up to you how you do this. This is just a suggestion.
@@ -38,8 +38,8 @@ class Togls extends UptechGrowthBookWrapper {
   Togls()
       : super(
           // In GrowthBook dashboard > SDK Endpoints url: https://cdn.growthbook.io/api/features/dev_Y1WwxOm9sDnIsO1DLvwJk76z3ribr3VoiTsaOs?project=prj_29g61lbb6s8290
-          // Include everything after the last '/'. example: dev_Y1WwxOm9sDnIsO1DLvwJk76z3ribr3VoiTsaOs?project=prj_29g61lbb6s8290
-          apiKey: 'your-api-key', 
+          // Include the entire url above
+          apiKey: 'your-api-key-url', 
         );
 
   static final shared = Togls();

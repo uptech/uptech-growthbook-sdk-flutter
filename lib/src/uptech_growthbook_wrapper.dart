@@ -16,10 +16,10 @@ Future<Map<String, dynamic>> loadOverridesFromAssets(String assetsPath) async {
 /// live client and stubbed out client for use case in
 /// automated testing.
 class UptechGrowthBookWrapper {
-  UptechGrowthBookWrapper({required this.apiKey});
+  UptechGrowthBookWrapper({required this.apiKeyUrl});
 
   late GrowthBookSDK _client;
-  final String apiKey;
+  final String apiKeyUrl;
   final Map<String, dynamic> _overrides = {};
   final Map<String, dynamic> _attributes = {};
 
@@ -38,7 +38,7 @@ class UptechGrowthBookWrapper {
     if (attributes != null) {
       _attributes.addAll(attributes);
     }
-    _client = _createLiveClient(apiKey: apiKey, seeds: seeds);
+    _client = _createLiveClient(apiKeyUrl: apiKeyUrl, seeds: seeds);
   }
 
   /// Initialize for use in automated test suite
@@ -88,15 +88,18 @@ class UptechGrowthBookWrapper {
   }
 
   GrowthBookSDK _createLiveClient({
-    required String apiKey,
+    required String apiKeyUrl,
     required Map<String, dynamic>? seeds,
   }) {
+    final dividingIndex = apiKeyUrl.lastIndexOf('/');
+    final apiKey = apiKeyUrl.substring(dividingIndex + 1);
+    final hostURL = apiKeyUrl.substring(0, dividingIndex);
     final gbContext = GBContext(
       apiKey: apiKey,
       enabled: true,
       qaMode: false,
       attributes: _attributes,
-      hostURL: 'https://cdn.growthbook.io/',
+      hostURL: hostURL,
       forcedVariation: <String, int>{},
       trackingCallBack: (gbExperiment, gbExperimentResult) {},
     );

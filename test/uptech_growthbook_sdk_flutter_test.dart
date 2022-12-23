@@ -3,7 +3,9 @@ import 'package:uptech_growthbook_sdk_flutter/uptech_growthbook_sdk_flutter.dart
 import 'package:flutter_test/flutter_test.dart';
 
 class ToglTest extends UptechGrowthBookWrapper {
-  ToglTest() : super(apiKey: 'dummy-api-key');
+  ToglTest()
+      : super(
+            apiKeyUrl: 'https://cdn.growthbook.io/api/features/dummy-api-key');
 
   static ToglTest instance = ToglTest();
 }
