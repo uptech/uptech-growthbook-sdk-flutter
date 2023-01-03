@@ -9,13 +9,12 @@ class ToglTest extends UptechGrowthBookWrapper {
 }
 
 void main() {
-  const String featureName = 'some-feature-name';
   group('UpTechGrowthBookSDKFlutter', () {
     group('#isOn', () {
       group('when no value is found for the feature', () {
         setUp(() {
           ToglTest.instance.initForTests(seeds: {
-            featureName: true,
+            'some-feature-name': true,
           });
         });
 
@@ -27,24 +26,24 @@ void main() {
       group('when a feature value is present', () {
         setUp(() {
           ToglTest.instance.initForTests(seeds: {
-            featureName: true,
+            'some-feature-name': true,
           });
         });
 
         test('it returns the feature value', () {
-          expect(ToglTest.instance.isOn(featureName), isTrue);
+          expect(ToglTest.instance.isOn('some-feature-name'), isTrue);
         });
       });
 
       group('when an override is present', () {
         setUp(() {
           ToglTest.instance.initForTests(
-            overrides: {featureName: true},
+            overrides: {'some-feature-name': true},
           );
         });
 
         test('it returns the overridden value', () {
-          expect(ToglTest.instance.isOn(featureName), isTrue);
+          expect(ToglTest.instance.isOn('some-feature-name'), isTrue);
         });
       });
     });
@@ -105,7 +104,7 @@ void main() {
   group('loadOverridesFromAssets', () {
     setUp(() {
       ToglTest.instance.initForTests(seeds: {
-        featureName: true,
+        'some-feature-name': true,
       });
     });
 
@@ -119,7 +118,7 @@ void main() {
     test('fetches overrides', () async {
       WidgetsFlutterBinding.ensureInitialized();
       final overrides = await loadOverridesFromAssets('assets/overrides.json');
-      expect(overrides[featureName], isTrue);
+      expect(overrides['some-feature-name'], isTrue);
     });
   });
 }
