@@ -63,6 +63,14 @@ class UptechGrowthBookWrapper {
     return await _client.refresh();
   }
 
+  void setAttributes(Map<String, dynamic> attributes) {
+    if (_client.context.attributes != null) {
+      _client.context.attributes?.addEntries(attributes.entries);
+    } else {
+      _client.context.attributes = attributes;
+    }
+  }
+
   /// Check if a feature is on/off
   bool isOn(String featureId) {
     final hasOverride = _overrides.containsKey(featureId);
