@@ -120,6 +120,28 @@ launched the app and the network connection is not working or the GrowthBook
 service was down then the toggles would evaluate to the value specified in the
 `seeds`.
 
+### Adding attributes
+
+If you want to add attributes at itialization, you can add values into the `attributes` key in the init function. This is useful if, for instance, you are only allowing certain versions of your app to access a feature.
+```dart
+void main() async {
+	// ...
+	// ...
+	WidgetsFlutterBinding.ensureInitialized();
+	final overrides = await loadOverridesFromAssets('assets/overrides.json');
+  final version = getVersionNumber(); // this is a method you create and provide the logic for
+	Togls.shared.init(
+		seeds: {
+		  'example-toggle-higher-fee': false,
+		},
+		overrides: overrides,
+    attributes: attributes: {'version': version},
+	);
+	// ...
+	// ...
+}
+```
+
 ## Usage
 
 Once you have it setup you are ready to start using it. The following examples
