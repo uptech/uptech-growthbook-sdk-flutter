@@ -165,6 +165,17 @@ int sampleApplyFee(int amount) {
 }
 ```
 
+### Set attributes
+Additional attributes can be set after initialization. This is a common use case in which an id attribute is set after user login (useful for canary testing). 
+```dart
+import 'package:yourproject/togls.dart';
+
+int sampleLogIn() {
+  final userId = await login(); // Fake method that logs in user and gets user id
+  Togls.shared.setAttributes({'id': userId});
+}
+```
+
 ### Control toggles in automated tests
 
 ```dart
