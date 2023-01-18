@@ -48,6 +48,203 @@ void main() {
           expect(ToglTest.instance.isOn('some-feature-name'), isTrue);
         });
       });
+
+      group('when the attribute is added at initialization', () {
+        group('and the major in the attribute is greater than the rules', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.9.9'}
+                  },
+                  'force': true
+                }
+              ],
+              attributes: {'version': '2.0.2'},
+            );
+          });
+
+          test('it returns true', () {
+            expect(ToglTest.instance.isOn('some-feature'), isTrue);
+          });
+        });
+
+        group('and the minor in the attribute is greater than the rules', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.0.9'}
+                  },
+                  'force': true
+                }
+              ],
+              attributes: {'version': '1.1.1'},
+            );
+          });
+
+          test('it returns true', () {
+            expect(ToglTest.instance.isOn('some-feature'), isTrue);
+          });
+        });
+
+        group('and the patch in the attribute is greater than the rules', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.0.0'}
+                  },
+                  'force': true
+                }
+              ],
+              attributes: {'version': '1.0.1'},
+            );
+          });
+
+          test('it returns true', () {
+            expect(ToglTest.instance.isOn('some-feature'), isTrue);
+          });
+        });
+
+        group('and the major in the attribute is less than the rules', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '2.0.0'}
+                  },
+                  'force': true
+                }
+              ],
+              attributes: {'version': '1.9.9'},
+            );
+          });
+
+          test('it returns false', () {
+            expect(ToglTest.instance.isOn('some-feature'), isFalse);
+          });
+        });
+
+        group('and the minor in the attribute is less than the rules', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.1.0'}
+                  },
+                  'force': true
+                }
+              ],
+              attributes: {'version': '1.0.9'},
+            );
+          });
+
+          test('it returns false', () {
+            expect(ToglTest.instance.isOn('some-feature'), isFalse);
+          });
+        });
+
+        group('and the patch in the attribute is less than the rules', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.0.1'}
+                  },
+                  'force': true
+                }
+              ],
+              attributes: {'version': '1.0.0'},
+            );
+          });
+
+          test('it returns false', () {
+            expect(ToglTest.instance.isOn('some-feature'), isFalse);
+          });
+        });
+      });
+
+      group('when the attribute is added after initialization', () {
+        group('and the attribute meets the condition', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.0.0'}
+                  },
+                  'force': true
+                }
+              ],
+            );
+            ToglTest.instance.setAttributes({'version': '1.0.1'});
+          });
+
+          test('it returns true', () {
+            expect(ToglTest.instance.isOn('some-feature'), isTrue);
+          });
+        });
+
+        group('and the attribute does not meet the condition', () {
+          setUp(() {
+            const String greaterThan = '\$gt';
+            ToglTest.instance.initForTests(
+              seeds: {
+                'some-feature': false,
+              },
+              rules: [
+                {
+                  'condition': {
+                    'version': {greaterThan: '1.0.0'}
+                  },
+                  'force': true
+                }
+              ],
+            );
+
+            ToglTest.instance.setAttributes({'version': '0.0.9'});
+          });
+
+          test('it returns false', () {
+            expect(ToglTest.instance.isOn('some-feature'), isFalse);
+          });
+        });
+      });
     });
 
     group('#value', () {
@@ -98,107 +295,6 @@ void main() {
               ToglTest.instance.value('string-value-feature'), equals('value'));
           expect(ToglTest.instance.value('int-value-feature'), equals(1));
           expect(ToglTest.instance.value('bool-value-feature'), isTrue);
-        });
-      });
-
-      group('when the attribute meets the condition', () {
-        group('and the attribute is added on init', () {
-          setUp(() {
-            const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
-              },
-              rules: [
-                {
-                  'condition': {
-                    'version': {greaterThan: '1.0.0'}
-                  },
-                  'force': true
-                }
-              ],
-              attributes: {'version': '1.0.1'},
-            );
-          });
-
-          test('it returns true', () {
-            expect(ToglTest.instance.isOn('some-feature'), isTrue);
-          });
-        });
-
-        group('and the attribute is added after initialization', () {
-          setUp(() {
-            const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
-              },
-              rules: [
-                {
-                  'condition': {
-                    'version': {greaterThan: '1.0.0'}
-                  },
-                  'force': true
-                }
-              ],
-            );
-            ToglTest.instance.setAttributes({'version': '1.0.1'});
-          });
-
-          test('it returns true', () {
-            expect(ToglTest.instance.isOn('some-feature'), isTrue);
-          });
-        });
-      });
-
-      group('when the attribute does not meet the condition', () {
-        group('and the attribute is added on init', () {
-          setUp(() {
-            const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
-              },
-              rules: [
-                {
-                  'condition': {
-                    'version': {greaterThan: '1.0.0'}
-                  },
-                  'force': true
-                }
-              ],
-              attributes: {'version': '0.0.9'},
-            );
-          });
-
-          test('it returns false', () {
-            expect(ToglTest.instance.isOn('some-feature'), isFalse);
-          });
-        });
-
-        group('and the attribute is added after initialization', () {
-          setUp(() {
-            const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
-              },
-              rules: [
-                {
-                  'condition': {
-                    'version': {greaterThan: '1.0.0'}
-                  },
-                  'force': true
-                }
-              ],
-            );
-
-            ToglTest.instance.setAttributes({'version': '0.0.9'});
-          });
-
-          test('it returns false', () {
-            expect(ToglTest.instance.isOn('some-feature'), isFalse);
-          });
         });
       });
     });
