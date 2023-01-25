@@ -16,10 +16,11 @@ Future<Map<String, dynamic>> loadOverridesFromAssets(String assetsPath) async {
 /// live client and stubbed out client for use case in
 /// automated testing.
 class UptechGrowthBookWrapper {
-  UptechGrowthBookWrapper({required this.apiKeyUrl});
+  UptechGrowthBookWrapper({required this.apiHost, required this.clientKey});
 
   late GrowthBookSDK _client;
-  final String apiKeyUrl;
+  final String apiHost;
+  final String clientKey;
   final Map<String, dynamic> _overrides = {};
   final Map<String, dynamic> _attributes = {};
 
@@ -38,7 +39,8 @@ class UptechGrowthBookWrapper {
     if (attributes != null) {
       _attributes.addAll(attributes);
     }
-    _client = _createLiveClient(apiKeyUrl: apiKeyUrl, seeds: seeds);
+    _client =
+        _createLiveClient(apiHost: apiHost, clientKey: clientKey, seeds: seeds);
   }
 
   /// Initialize for use in automated test suite
@@ -96,18 +98,16 @@ class UptechGrowthBookWrapper {
   }
 
   GrowthBookSDK _createLiveClient({
-    required String apiKeyUrl,
+    required String apiHost,
+    required String clientKey,
     required Map<String, dynamic>? seeds,
   }) {
-    final dividingIndex = apiKeyUrl.lastIndexOf('/');
-    final apiKey = apiKeyUrl.substring(dividingIndex + 1);
-    final hostURL = apiKeyUrl.substring(0, dividingIndex);
     final gbContext = GBContext(
-      apiKey: apiKey,
+      apiKey: clientKey,
       enabled: true,
       qaMode: false,
       attributes: _attributes,
-      hostURL: hostURL,
+      hostURL: apiHost,
       forcedVariation: <String, int>{},
       trackingCallBack: (gbExperiment, gbExperimentResult) {},
     );

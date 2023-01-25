@@ -24,22 +24,23 @@ To set this up you need an account on [GrowthBook][] or to be hosting it
 yourself.
 
 Once you have an account and have setup your Project and the environments the
-way you want. You need to get the read-only API key for each of the
+way you want. You need to get the API Host & Client Key for each of the
 environments and configure them in your app per environment.
 
 Then you need to setup a singleton in your app to to house the shared instance
-of the `UptechGrowthBookWrapper`. *Note:* This is whan needs the `apiKeyUrl` that
-should come from your environment config and **not** be hard coded in your app.
-This might look as follows maybe in a file called, `lib/togls.dart`. It is
-really up to you how you do this. This is just a suggestion.
+of the `UptechGrowthBookWrapper`. *Note:* This is what needs the `apiHost` &
+`clientKey` that should come from your environment config and **not** be hard
+coded in your app. This might look as follows maybe in a file called,
+`lib/togls.dart`. It is really up to you how you do this. This is just a
+suggestion.
 
 ```dart
 class Togls extends UptechGrowthBookWrapper {
   Togls()
       : super(
-          // In GrowthBook dashboard > SDK Endpoints url: https://cdn.growthbook.io/api/features/dev_Y1WwxOm9sDnIsO1DLvwJk76z3ribr3VoiTsaOs?project=prj_29g61lbb6s8290
-          // Include the entire url above
-          apiKey: 'your-api-key-url', 
+          // In GrowthBook SDKs, then under a particular SDK connection.
+		  apiHost: 'your-api-host',
+		  clientKey: 'your-client-key',
         );
 
   static final shared = Togls();
@@ -122,7 +123,10 @@ service was down then the toggles would evaluate to the value specified in the
 
 ### Adding attributes
 
-If you want to add attributes at itialization, you can add values into the `attributes` key in the init function. This is useful if, for instance, you are only allowing certain versions of your app to access a feature.
+If you want to add attributes at itialization, you can add values into the
+`attributes` key in the init function. This is useful if, for instance, you are
+only allowing certain versions of your app to access a feature.
+
 ```dart
 void main() async {
 	// ...
@@ -182,7 +186,11 @@ int sampleApplyFee(int amount) {
 ```
 
 ### Set attributes
-Additional attributes can be set after initialization. This is a common use case in which an id attribute is set after user login (useful for canary testing). 
+
+Additional attributes can be set after initialization. This is a common use
+case in which an id attribute is set after user login (useful for canary
+testing).
+
 ```dart
 import 'package:yourproject/togls.dart';
 
