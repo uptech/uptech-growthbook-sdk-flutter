@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:uptech_growthbook_sdk_flutter/uptech_growthbook_sdk_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'dart:io';
 
 class ToglTest extends UptechGrowthBookWrapper {
   ToglTest()
@@ -11,6 +12,29 @@ class ToglTest extends UptechGrowthBookWrapper {
 }
 
 void main() {
+  group('integration', () {
+    test('it successfully fetches a real feature from a real service',
+        tags: ['integration'], () async {
+      final instance = UptechGrowthBookWrapper(
+          apiHost: 'https://cdn.growthbook.io/',
+          clientKey: 'sdk-rcGyvixKw6PHXQ24');
+      instance.init(seeds: {'my-feature': false});
+      await instance.refresh();
+      expect(instance.isOn('my-feature'), isTrue);
+    });
+
+    test(
+        'it successfully fetches a real remote config value from a real service',
+        tags: ['integration'], () async {
+      final instance = UptechGrowthBookWrapper(
+          apiHost: 'https://cdn.growthbook.io/',
+          clientKey: 'sdk-rcGyvixKw6PHXQ24');
+      instance.init(seeds: {'my-value-feature': 'bar'});
+      await instance.refresh();
+      expect(instance.value('my-value-feature'), 'foo');
+    });
+  });
+
   group('UpTechGrowthBookSDKFlutter', () {
     group('#isOn', () {
       group('when no value is found for the feature', () {
