@@ -18,7 +18,7 @@ void main() {
       final instance = UptechGrowthBookWrapper(
           apiHost: 'https://cdn.growthbook.io/',
           clientKey: 'sdk-rcGyvixKw6PHXQ24');
-      instance.init(seeds: {'my-feature': false});
+      await instance.init(seeds: {'my-feature': false});
       await instance.refresh();
       expect(instance.isOn('my-feature'), isTrue);
     });
@@ -29,7 +29,7 @@ void main() {
       final instance = UptechGrowthBookWrapper(
           apiHost: 'https://cdn.growthbook.io/',
           clientKey: 'sdk-rcGyvixKw6PHXQ24');
-      instance.init(seeds: {'my-value-feature': 'bar'});
+      await instance.init(seeds: {'my-value-feature': 'bar'});
       await instance.refresh();
       expect(instance.value('my-value-feature'), 'foo');
     });
@@ -38,8 +38,8 @@ void main() {
   group('UpTechGrowthBookSDKFlutter', () {
     group('#isOn', () {
       group('when no value is found for the feature', () {
-        setUp(() {
-          ToglTest.instance.initForTests(seeds: {
+        setUp(() async {
+          await ToglTest.instance.initForTests(seeds: {
             'some-feature-name': true,
           });
         });
@@ -50,8 +50,8 @@ void main() {
       });
 
       group('when a feature value is present', () {
-        setUp(() {
-          ToglTest.instance.initForTests(seeds: {
+        setUp(() async {
+          await ToglTest.instance.initForTests(seeds: {
             'some-feature-name': true,
           });
         });
@@ -75,9 +75,9 @@ void main() {
 
       group('when the attribute is added at initialization', () {
         group('and the major in the attribute is greater than the rules', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -99,9 +99,9 @@ void main() {
         });
 
         group('and the minor in the attribute is greater than the rules', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -123,9 +123,9 @@ void main() {
         });
 
         group('and the patch in the attribute is greater than the rules', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -147,9 +147,9 @@ void main() {
         });
 
         group('and the major in the attribute is less than the rules', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -171,9 +171,9 @@ void main() {
         });
 
         group('and the minor in the attribute is less than the rules', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -195,9 +195,9 @@ void main() {
         });
 
         group('and the patch in the attribute is less than the rules', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -221,9 +221,9 @@ void main() {
 
       group('when the attribute is added after initialization', () {
         group('and the attribute meets the condition', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -245,9 +245,9 @@ void main() {
         });
 
         group('and the attribute does not meet the condition', () {
-          setUp(() {
+          setUp(() async {
             const String greaterThan = '\$gt';
-            ToglTest.instance.initForTests(
+            await ToglTest.instance.initForTests(
               seeds: {
                 'some-feature': false,
               },
@@ -273,8 +273,8 @@ void main() {
 
     group('#value', () {
       group('when no value is found for the feature', () {
-        setUp(() {
-          ToglTest.instance.initForTests(seeds: {
+        setUp(() async {
+          await ToglTest.instance.initForTests(seeds: {
             'string-value-feature': 'value',
             'int-value-feature': 1,
             'bool-value-feature': true,
@@ -287,8 +287,8 @@ void main() {
       });
 
       group('when a feature value is present', () {
-        setUp(() {
-          ToglTest.instance.initForTests(seeds: {
+        setUp(() async {
+          await ToglTest.instance.initForTests(seeds: {
             'string-value-feature': 'value',
             'int-value-feature': 1,
             'bool-value-feature': true,
@@ -304,8 +304,8 @@ void main() {
       });
 
       group('when an override is present', () {
-        setUp(() {
-          ToglTest.instance.initForTests(
+        setUp(() async {
+          await ToglTest.instance.initForTests(
             overrides: {
               'string-value-feature': 'value',
               'int-value-feature': 1,
@@ -325,8 +325,8 @@ void main() {
   });
 
   group('loadOverridesFromAssets', () {
-    setUp(() {
-      ToglTest.instance.initForTests(seeds: {
+    setUp(() async {
+      await ToglTest.instance.initForTests(seeds: {
         'some-feature-name': true,
       });
     });
