@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
 import 'package:uptech_growthbook_sdk_flutter/uptech_growthbook_sdk_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -17,7 +18,8 @@ void main() {
       final instance = UptechGrowthBookWrapper(
           apiHost: 'https://cdn.growthbook.io/',
           clientKey: 'sdk-rcGyvixKw6PHXQ24');
-      await instance.init(seeds: {'my-feature': false});
+      await instance
+          .init(features: {'my-feature': GBFeature(defaultValue: false)});
       await instance.refresh();
       expect(instance.isOn('my-feature'), isTrue);
     });
@@ -28,7 +30,8 @@ void main() {
       final instance = UptechGrowthBookWrapper(
           apiHost: 'https://cdn.growthbook.io/',
           clientKey: 'sdk-rcGyvixKw6PHXQ24');
-      await instance.init(seeds: {'my-value-feature': 'bar'});
+      await instance
+          .init(features: {'my-value-feature': GBFeature(defaultValue: 'bar')});
       await instance.refresh();
       expect(instance.value('my-value-feature'), 'foo');
     });
@@ -38,8 +41,8 @@ void main() {
     group('#isOn', () {
       group('when no value is found for the feature', () {
         setUp(() async {
-          await ToglTest.instance.initForTests(seeds: {
-            'some-feature-name': true,
+          await ToglTest.instance.initForTests(features: {
+            'some-feature-name': GBFeature(defaultValue: true),
           });
         });
 
@@ -50,8 +53,8 @@ void main() {
 
       group('when a feature value is present', () {
         setUp(() async {
-          await ToglTest.instance.initForTests(seeds: {
-            'some-feature-name': true,
+          await ToglTest.instance.initForTests(features: {
+            'some-feature-name': GBFeature(defaultValue: true),
           });
         });
 
@@ -77,8 +80,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -101,8 +104,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -125,8 +128,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -149,8 +152,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -173,8 +176,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -197,8 +200,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -223,8 +226,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -247,8 +250,8 @@ void main() {
           setUp(() async {
             const String greaterThan = '\$gt';
             await ToglTest.instance.initForTests(
-              seeds: {
-                'some-feature': false,
+              features: {
+                'some-feature': GBFeature(defaultValue: false),
               },
               rules: [
                 {
@@ -273,10 +276,10 @@ void main() {
     group('#value', () {
       group('when no value is found for the feature', () {
         setUp(() async {
-          await ToglTest.instance.initForTests(seeds: {
-            'string-value-feature': 'value',
-            'int-value-feature': 1,
-            'bool-value-feature': true,
+          await ToglTest.instance.initForTests(features: {
+            'string-value-feature': GBFeature(defaultValue: 'value'),
+            'int-value-feature': GBFeature(defaultValue: 1),
+            'bool-value-feature': GBFeature(defaultValue: true),
           });
         });
 
@@ -287,10 +290,10 @@ void main() {
 
       group('when a feature value is present', () {
         setUp(() async {
-          await ToglTest.instance.initForTests(seeds: {
-            'string-value-feature': 'value',
-            'int-value-feature': 1,
-            'bool-value-feature': true,
+          await ToglTest.instance.initForTests(features: {
+            'string-value-feature': GBFeature(defaultValue: 'value'),
+            'int-value-feature': GBFeature(defaultValue: 1),
+            'bool-value-feature': GBFeature(defaultValue: true),
           });
         });
 
@@ -306,9 +309,9 @@ void main() {
         setUp(() async {
           await ToglTest.instance.initForTests(
             overrides: {
-              'string-value-feature': 'value',
-              'int-value-feature': 1,
-              'bool-value-feature': true,
+              'string-value-feature': GBFeature(defaultValue: 'value'),
+              'int-value-feature': GBFeature(defaultValue: 1),
+              'bool-value-feature': GBFeature(defaultValue: true),
             },
           );
         });
@@ -325,8 +328,8 @@ void main() {
 
   group('loadOverridesFromAssets', () {
     setUp(() async {
-      await ToglTest.instance.initForTests(seeds: {
-        'some-feature-name': true,
+      await ToglTest.instance.initForTests(features: {
+        'some-feature-name': GBFeature(defaultValue: true),
       });
     });
 
