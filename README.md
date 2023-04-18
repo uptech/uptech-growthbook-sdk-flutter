@@ -239,3 +239,10 @@ void main() {
 
 [GrowthBook Flutter SDK]: https://github.com/alippo-com/GrowthBook-SDK-Flutter
 [GrowthBook]: https://www.growthbook.io
+
+### Update Project Shell Libs
+This should be run as often as possible to ensure your project has the most up to date shell scripts.
+```
+sh ./.git-ps/vendor/libs/update_project_shell_libs
+```
+Note: this command must be done from the root directory of this project to be successful. Otherwise, an error message will appear.
