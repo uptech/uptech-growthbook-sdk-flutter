@@ -27,10 +27,25 @@ class UptechGrowthBookWrapper {
   /// Initialize for use in app, seeds allow you to specify value of
   /// toggles prior to fetching remote toggle states. These will be
   /// the values if on init it fails to fetch the toggles from the remote.
-  Future<void> init(
-      {Map<String, dynamic>? seeds,
-      Map<String, dynamic>? overrides,
-      Map<String, dynamic>? attributes}) async {
+  Future<void> init({
+    // Updates to the growthbook_sdk_flutter package changed the structure of features
+    // This workaround allows seeded features to still be passed in using the old format,
+    // as well as features using the new format with GBFeature. We simply convert the
+    // seeds into GBFeatures and add them to the final Map<String, GBFeature>.
+    Map<String, GBFeature> features = const <String, GBFeature>{},
+    @Deprecated('Instead use "features" as Map<String, GBFeature>')
+        Map<String, dynamic> seeds = const <String, dynamic>{},
+    Map<String, dynamic>? overrides,
+    Map<String, dynamic>? attributes,
+  }) async {
+    Map<String, GBFeature> finalFeatures = Map.from(features);
+    // Convert seeds to GBFeatures and add to finalFeatures Map
+    if (seeds.isNotEmpty) {
+      seeds.forEach((key, value) {
+        finalFeatures[key] = GBFeature(defaultValue: value);
+      });
+    }
+
     _overrides.clear();
     _attributes.clear();
     if (overrides != null) {
@@ -40,13 +55,18 @@ class UptechGrowthBookWrapper {
       _attributes.addAll(attributes);
     }
     _client = await _createLiveClient(
-        apiHost: apiHost, clientKey: clientKey, seeds: seeds);
+      apiHost: apiHost,
+      clientKey: clientKey,
+      features: finalFeatures,
+    );
     await refresh();
   }
 
   /// Initialize for use in automated test suite
   Future<void> initForTests(
-      {Map<String, dynamic>? seeds,
+      {Map<String, GBFeature> features = const <String, GBFeature>{},
+      @Deprecated('Instead use "features" as Map<String, GBFeature>')
+          Map<String, dynamic> seeds = const <String, dynamic>{},
       Map<String, dynamic>? overrides,
       Map<String, dynamic>? attributes,
       List<Map<String, dynamic>>? rules}) async {
@@ -102,17 +122,17 @@ class UptechGrowthBookWrapper {
   Future<GrowthBookSDK> _createLiveClient({
     required String apiHost,
     required String clientKey,
-    required Map<String, dynamic>? seeds,
+    required Map<String, GBFeature> features,
   }) async {
     final app = await GBSDKBuilderApp(
-            apiKey: clientKey,
-            qaMode: false,
-            attributes: _attributes,
-            hostURL: apiHost,
-            growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {})
-        .initialize();
+      apiKey: clientKey,
+      qaMode: false,
+      attributes: _attributes,
+      hostURL: apiHost,
+      growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {},
+      features: features,
+    ).initialize();
 
-    app.featuresFetchedSuccessfully(_seedsToGBFeatures(seeds: seeds));
     return app;
   }
 
