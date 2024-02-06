@@ -9,13 +9,13 @@ able to manage toggle states properly within automated test suites.
 Get dependencies
 
 ```
-flutter pub get
+fvm flutter pub get
 ```
 
 Run tests
 
 ```
-flutter test
+fvm flutter test
 ```
 
 ## Setup
