@@ -18,6 +18,20 @@ Run tests
 fvm flutter test
 ```
 
+## Publish
+
+Test out the publishing with a dry-run.
+
+```
+fvm flutter pub publish --dry-run
+```
+
+Once you are confident you are good.
+
+```
+fvm flutter pub publish
+```
+
 ## Setup
 
 To set this up you need an account on [GrowthBook][] or to be hosting it
