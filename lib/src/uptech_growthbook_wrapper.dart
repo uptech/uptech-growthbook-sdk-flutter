@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:growthbook_sdk_flutter/growthbook_sdk_flutter.dart';
+
 import 'uptech_growthbook_wrapper_test_client.dart';
 
 Future<Map<String, dynamic>> loadOverridesFromAssets(String assetsPath) async {
@@ -27,10 +29,11 @@ class UptechGrowthBookWrapper {
   /// Initialize for use in app, seeds allow you to specify value of
   /// toggles prior to fetching remote toggle states. These will be
   /// the values if on init it fails to fetch the toggles from the remote.
-  Future<void> init(
-      {Map<String, dynamic>? seeds,
-      Map<String, dynamic>? overrides,
-      Map<String, dynamic>? attributes}) async {
+  Future<void> init({
+    Map<String, dynamic>? seeds,
+    Map<String, dynamic>? overrides,
+    Map<String, dynamic>? attributes,
+  }) async {
     _overrides.clear();
     _attributes.clear();
     if (overrides != null) {
@@ -40,16 +43,21 @@ class UptechGrowthBookWrapper {
       _attributes.addAll(attributes);
     }
     _client = await _createLiveClient(
-        apiHost: apiHost, clientKey: clientKey, seeds: seeds);
+      apiHost: apiHost,
+      clientKey: clientKey,
+      seeds: seeds,
+    );
+
     await refresh();
   }
 
   /// Initialize for use in automated test suite
-  Future<void> initForTests(
-      {Map<String, dynamic>? seeds,
-      Map<String, dynamic>? overrides,
-      Map<String, dynamic>? attributes,
-      List<Map<String, dynamic>>? rules}) async {
+  Future<void> initForTests({
+    Map<String, dynamic>? seeds,
+    Map<String, dynamic>? overrides,
+    Map<String, dynamic>? attributes,
+    List<Map<String, dynamic>>? rules,
+  }) async {
     _overrides.clear();
     _attributes.clear();
     if (overrides != null) {
@@ -59,7 +67,6 @@ class UptechGrowthBookWrapper {
       _attributes.addAll(attributes);
     }
     _client = await _createTestClient(seeds: seeds, rules: rules);
-    await refresh();
   }
 
   /// Force a refresh of toggles from the server
@@ -84,6 +91,7 @@ class UptechGrowthBookWrapper {
       return value == true;
     }
 
+    print(_client.features);
     return _client.feature(featureId).on ?? false;
   }
 
@@ -105,27 +113,33 @@ class UptechGrowthBookWrapper {
     required Map<String, dynamic>? seeds,
   }) async {
     final app = await GBSDKBuilderApp(
-            apiKey: clientKey,
-            qaMode: false,
-            attributes: _attributes,
-            hostURL: apiHost,
-            growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {})
-        .initialize();
+      apiKey: clientKey,
+      qaMode: false,
+      attributes: _attributes,
+      hostURL: apiHost,
+      growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {},
+      refreshHandler: (_) {},
+      backgroundSync: false,
+    ).initialize();
 
     app.featuresFetchedSuccessfully(_seedsToGBFeatures(seeds: seeds));
     return app;
   }
 
-  Future<GrowthBookSDK> _createTestClient(
-      {Map<String, dynamic>? seeds, List<Map<String, dynamic>>? rules}) async {
+  Future<GrowthBookSDK> _createTestClient({
+    Map<String, dynamic>? seeds,
+    List<Map<String, dynamic>>? rules,
+  }) async {
     final app = await GBSDKBuilderApp(
-            apiKey: 'some-garbage-key-because-we-are-not-using-it',
-            hostURL: 'https://cdn.growthbook.io/',
-            attributes: _attributes,
-            growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {},
-            client:
-                UptechGrowthBookWrapperTestClient(seeds: seeds, rules: rules))
-        .initialize();
+      apiKey: 'some-garbage-key-because-we-are-not-using-it',
+      hostURL: 'https://cdn.growthbook.io/',
+      attributes: _attributes,
+      growthBookTrackingCallBack: (gbExperiment, gbExperimentResult) {},
+      client: UptechGrowthBookWrapperTestClient(seeds: seeds, rules: rules),
+      refreshHandler: (_) {},
+      backgroundSync: false,
+    ).initialize();
+
     app.featuresFetchedSuccessfully(_seedsToGBFeatures(seeds: seeds));
     return app;
   }
